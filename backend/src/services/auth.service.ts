@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import pool from "../core/db";
-import type { SignupInput, LoginInput } from "../schemas/auth.schemas"
+import type { SignupInput, LoginInput, RefreshTokenInput } from "../schemas/auth.schemas"
 
 export const signupService = async (data: SignupInput) => {
   const { full_name, email, password } = data;
@@ -116,5 +116,42 @@ export const LoginService = async (data: LoginInput) => {
             refreshToken
         }
 
+}
 
+export const RefreshService = async (data: RefreshTokenInput) => {
+
+    const refreshToken = data.refresh_token
+
+    const payload = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET!,
+    ) as {userId: string};
+
+    const id = payload.userId
+
+    const result = await pool.query(
+        `
+        SELECT id
+        FROM users
+        WHERE id = $1
+        `,
+        [id]
+    );
+
+    if (result.rows.length === 0) {
+        return {
+            "error": "User Not Found",
+            "detail": "Invalid User, user not found."
+        }
+    }
+
+    const accessToken = jwt.sign(
+        { userId: id },
+        process.env.JWT_ACCESS_SECRET!,
+        { expiresIn: "15m" }
+    );
+
+    return {
+        accessToken,
+    }
 }
