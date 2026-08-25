@@ -14,8 +14,7 @@ export const signupService = async (data: SignupInput) => {
 
   if (existingUser.rows.length > 0) {
     return {
-        "error": "User already exists.",
-        "detail": "Invalid email or password, choose another one."
+        "error": "Invalid email or password, choose another one."
     }
   }
 
@@ -78,8 +77,7 @@ export const LoginService = async (data: LoginInput) => {
 
         if (!user_data) {
             return {
-                "error": "User does not exists.",
-                "detail": "Invalid email or password."
+                "error": "Invalid email or password."
             }
         }
 
@@ -90,8 +88,7 @@ export const LoginService = async (data: LoginInput) => {
 
         if (!passwordValid) {
             return {
-                "error": "Incorrect Password",
-                "detail": "Invalid email or password."
+                "error": "Invalid email or password."
             }
         }
 
@@ -141,7 +138,6 @@ export const RefreshService = async (data: RefreshTokenInput) => {
     if (result.rows.length === 0) {
         return {
             "error": "User Not Found",
-            "detail": "Invalid User, user not found."
         }
     }
 
