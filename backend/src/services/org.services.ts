@@ -1,5 +1,5 @@
 import pool from "../core/db";
-import { createOrgTypes, createUserTypes } from "../schemas/org.schemas";
+import { createOrgTypes, createUserTypes, orgIdType, createUpdateTypes } from "../schemas/org.schemas";
 
 export const createOrgService = async (data: createOrgTypes) => {
     const name = data.name
@@ -61,5 +61,67 @@ export const addUserService = async (data: createUserTypes) => {
 
     return {
         return_data
+    }
+}
+
+export const getOrgUpdatesService = async (data: orgIdType) => {
+    const id = data.org_id
+
+    const result = await pool.query(
+        `
+        SELECT * FROM updates WHERE organization_id = $1
+        `,
+        [id]
+    )
+
+    const updates = result.rows
+
+    if (!updates) {
+        return {
+            "error": "Organization not found"
+        }
+    }
+
+    return {
+        updates
+    }
+
+}
+
+export const postOrgUpdate = async (data: createUpdateTypes) => {
+
+    const { organization_id, created_by, title, description, status, img_url} = data
+
+    const result = await pool.query(
+        `INSERT INTO updates (
+            organization_id,
+            created_by,
+            title,
+            description,
+            img_url,
+            status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *`,
+        [
+            organization_id,
+            created_by,
+            title,
+            description ?? null,
+            img_url ?? null,
+            status,
+        ]
+    );
+
+    const update_data = result.rows[0]
+
+    if (!update_data) {
+        return {
+            "error": "Invalid input values, re-check request values."
+        }
+    }
+
+    return {
+        update_data
     }
 }
