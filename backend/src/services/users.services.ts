@@ -64,3 +64,32 @@ export const changePlanService = async (data: PlanTypeInput) => {
     }
 
 }
+
+export const getOrganizationsService = async (data: UserIdInput) => {
+    const id = data.user_id
+
+    const result = await pool.query(
+        `
+        SELECT
+            organization_id,
+            name,
+            owner_id,
+            created_at
+        FROM organizations
+        WHERE owner_id = $1
+        `,
+        [id]
+    );
+
+    const org_data = result.rows
+
+    if (!org_data) {
+        return {
+            "error": "User id not found."
+        }
+    }
+
+    return {
+        org_data
+    }
+}

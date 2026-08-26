@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { userIdSchema, membershipSchema } from "../schemas/users.schemas";
-import { getUserDataService, changePlanService } from "../services/users.services";
+import { getUserDataService, changePlanService, getOrganizationsService } from "../services/users.services";
 
 export const getUserData = async (req: Request, res: Response) => {
     const request = userIdSchema.safeParse(req.body)
@@ -44,5 +44,26 @@ export const changePlanType = async (req: Request, res: Response) => {
     }
 
     return res.status(404).send(response)
+
+}
+
+export const getOrganizationsData = async (req: Request, res: Response) =>{
+    const request = userIdSchema.safeParse(req.body)
+
+    if (!request.success) {
+        return res.status(400).send({
+            "error": "Request Schema is not valid"
+        })
+    }
+
+    const data = request.data
+
+    const response = await getOrganizationsService(data)
+
+    if (response.error) {
+        return res.status(404).send(response)
+    }
+
+    res.status(200).send(response)
 
 }
