@@ -1,5 +1,5 @@
 import pool from "../core/db";
-import { createOrgTypes } from "../schemas/org.schemas";
+import { createOrgTypes, createUserTypes } from "../schemas/org.schemas";
 
 export const createOrgService = async (data: createOrgTypes) => {
     const name = data.name
@@ -30,4 +30,36 @@ export const createOrgService = async (data: createOrgTypes) => {
         organization
     }
 
+}
+
+export const addUserService = async (data: createUserTypes) => {
+    const { org_id, user_id, role} = data
+
+    const result = await pool.query(
+        `
+        INSERT INTO organization_users (
+            organization_id,
+            user_id,
+            role
+        )
+        VALUES ($1, $2, $3)
+        RETURNING
+            organization_id,
+            user_id,
+            role
+        `,
+        [org_id, user_id, role]
+    );
+
+    const return_data = result.rows[0]
+
+    if (!return_data) {
+        return {
+            "error": "User id not found"
+        }
+    }
+
+    return {
+        return_data
+    }
 }
