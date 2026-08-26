@@ -8,16 +8,21 @@ export const getUserDataService = async (data: UserIdInput) => {
     const result = await pool.query(
         `
         SELECT
-            id,
-            full_name,
-            email,
-            plan,
-            created_at
-        FROM users
-        WHERE id = $1
+            u.id,
+            u.full_name,
+            u.email,
+            u.plan,
+            u.created_at,
+            (
+                SELECT COUNT(*)
+                FROM organizations o
+                WHERE o.owner_id = u.id
+            ) AS total_organizations
+        FROM users u
+        WHERE u.id = $1
         `,
         [userId]
-    );
+);
 
     const user_data = result.rows[0]
 
