@@ -1,3 +1,4 @@
+import { error } from "node:console";
 import { z } from "zod"
 
 export const createOrgInput = z.object({
@@ -9,4 +10,11 @@ export const createOrgInput = z.object({
     owner_id: z.uuid()
 })
 
+export const createUserInput = z.object({
+    org_id: z.uuid(),
+    user_id: z.uuid(),
+    role: z.enum(["client", "freelancer"])
+})
+
 export type createOrgTypes = z.infer<typeof createOrgInput>;
+export type createUserTypes = z.infer<typeof createUserInput>;
