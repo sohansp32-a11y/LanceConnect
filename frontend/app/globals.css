@@ -24,3 +24,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Docs page/UI tweaks */
+.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace; }
+.rounded-xl { border-radius: 12px; }
+.backdrop-blur-sm { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+
