@@ -1,0 +1,139 @@
+{
+  "title": "LanceConnect API & Schemas",
+  "generated_at": "2026-08-31",
+  "routes": [
+    {
+      "path": "/auth/sign-up",
+      "method": "POST",
+      "auth": "no",
+      "description": "Create a new user",
+      "bodySchema": "signupSchema",
+      "sampleBody": { "full_name": "Jane Doe", "email": "jane@example.com", "password": "password123" }
+    },
+    {
+      "path": "/auth/log-in",
+      "method": "POST",
+      "auth": "no",
+      "description": "Authenticate user and return tokens",
+      "bodySchema": "loginSchema",
+      "sampleBody": { "email": "jane@example.com", "password": "password123" }
+    },
+    {
+      "path": "/auth/refresh",
+      "method": "POST",
+      "auth": "no",
+      "description": "Refresh auth tokens",
+      "bodySchema": "refreshSchema",
+      "sampleBody": { "refresh_token": "<token>" }
+    },
+    {
+      "path": "/users/data",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Get user data",
+      "bodySchema": "userIdSchema",
+      "sampleBody": { "user_id": "<uuid>" }
+    },
+    {
+      "path": "/users/plan",
+      "method": "PUT",
+      "auth": "yes",
+      "description": "Change user plan",
+      "bodySchema": "membershipSchema",
+      "sampleBody": { "plan": "pro", "user_id": "<uuid>" }
+    },
+    {
+      "path": "/org/create_org",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Create an organization",
+      "bodySchema": "createOrgInput",
+      "sampleBody": { "name": "Acme Inc", "owner_id": "<uuid>" }
+    },
+    {
+      "path": "/org/add-user",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Add a user to an organization",
+      "bodySchema": "createUserInput",
+      "sampleBody": { "org_id": "<uuid>", "user_id": "<uuid>", "role": "client" }
+    },
+    {
+      "path": "/org/get_updates",
+      "method": "POST",
+      "auth": "yes",
+      "description": "List organization updates",
+      "bodySchema": "orgIdInput",
+      "sampleBody": { "org_id": "<uuid>" }
+    },
+    {
+      "path": "/org/post_update",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Create an organization update",
+      "bodySchema": "createUpdateSchema",
+      "sampleBody": { "organization_id": "<uuid>", "created_by": "<uuid>", "title": "Update", "description": "..." }
+    },
+    {
+      "path": "/org/get_requests",
+      "method": "POST",
+      "auth": "yes",
+      "description": "List requests for an organization",
+      "bodySchema": "orgRequestsInput",
+      "sampleBody": { "org_id": "<uuid>" }
+    },
+    {
+      "path": "/org/post_request",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Create a request",
+      "bodySchema": "createRequestSchema",
+      "sampleBody": { "organization_id": "<uuid>", "client_id": "<uuid>", "title": "Need help" }
+    },
+    {
+      "path": "/org/update_request",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Update a request status",
+      "bodySchema": "updateRequestSchema",
+      "sampleBody": { "request_id": "<uuid>", "status": "approved" }
+    },
+    {
+      "path": "/org/get_invoices",
+      "method": "POST",
+      "auth": "yes",
+      "description": "List invoices for an organization",
+      "bodySchema": "orgInvoicesInput",
+      "sampleBody": { "org_id": "<uuid>" }
+    },
+    {
+      "path": "/org/post_invoice",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Create an invoice",
+      "bodySchema": "createInvoiceSchema",
+      "sampleBody": { "organization_id": "<uuid>", "created_by": "<uuid>", "title": "Design", "price": 1500 }
+    },
+    {
+      "path": "/org/update_invoice",
+      "method": "POST",
+      "auth": "yes",
+      "description": "Update an invoice status",
+      "bodySchema": "updateInvoiceSchema",
+      "sampleBody": { "invoice_id": "<uuid>", "status": "final" }
+    }
+  ],
+  "schemas": {
+    "signupSchema": "{ full_name: string, email: string, password: string }",
+    "loginSchema": "{ email: string, password: string }",
+    "refreshSchema": "{ refresh_token: string }",
+    "userIdSchema": "{ user_id: uuid }",
+    "membershipSchema": "{ plan: 'free'|'pro'|'max', user_id: uuid }",
+    "createOrgInput": "{ name: string, owner_id: uuid }",
+    "createUserInput": "{ org_id: uuid, user_id: uuid, role: 'client'|'freelancer' }",
+    "createUpdateSchema": "{ organization_id: uuid, created_by: uuid, title: string, description?: string, img_url?: string, status: 'in_progress'|'completed' }",
+    "createRequestSchema": "{ organization_id: uuid, client_id: uuid, title: string, description?: string, status?: 'pending'|'approved'|'rejected'|'completed' }",
+    "createInvoiceSchema": "{ organization_id: uuid, created_by: uuid, title: string, price: number, status?: 'pending'|'final', accepted_at?: string }"
+  },
+  "notes": "All org routes require auth; replace <uuid> placeholders with real UUIDs; use Authorization header Bearer <token>."
+}
